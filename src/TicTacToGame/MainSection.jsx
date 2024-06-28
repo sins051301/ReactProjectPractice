@@ -6,6 +6,7 @@ import Title from "./Title";
 import PlayerInfo from "./components/PlayerInfo";
 import Log from "./components/Log";
 import { Winning_Combinations } from "./Winning_Combinations";
+import GameOver from "./components/GameOver";
 const MainBackground = styled.div`
   width: 100vw;
   height: 100vh;
@@ -23,30 +24,27 @@ const PlayersWrap = styled.ol`
 //배열 자체를 주어야 하기때문에 {gameTurns} 전달하면 안됨
 
 //부모 컴포넌트로 상태 끌어올리기
-function MainSection() {
-  const [gameTurns, setGameTurns] = useState([]);
+const PLAYERS = {
+  X: "player 1",
+  O: "Player 2",
+};
+const INITIAL_GAME_BOARD = [
+  [null, null, null],
+  [null, null, null],
+  [null, null, null],
+];
 
-  function deriveActivePlayer(gameTurns) {
-    let currentPlayer = "X";
-    //마지막 턴이 x였을 경우
-    if (gameTurns.length > 0 && gameTurns[0].player === "X") {
-      currentPlayer = "O";
-    }
-    return currentPlayer;
-  }
-
-  const initialGameBoard = [
-    [null, null, null],
-    [null, null, null],
-    [null, null, null],
-  ];
-
-  let gameBoard = initialGameBoard;
+function deriveGameBoard(gameTurns) {
+  let gameBoard = [...INITIAL_GAME_BOARD.map((arrays) => [...arrays])];
   for (const turn of gameTurns) {
     const { square, player } = turn;
     const { row, col } = square;
     gameBoard[row][col] = player;
   }
+  return gameBoard;
+}
+
+function deriveWinner(gameBoard, players) {
   let winner;
   for (const combination of Winning_Combinations) {
     const firstSquareSymbol =
@@ -61,13 +59,32 @@ function MainSection() {
       firstSquareSymbol === secondSquareSymbol &&
       firstSquareSymbol === thirdSquareSymbol
     ) {
-      winner = firstSquareSymbol;
+      winner = players[firstSquareSymbol];
     }
   }
+  return winner;
+}
+
+function MainSection() {
+  const [players, setPlayers] = useState(PLAYERS);
+  const [gameTurns, setGameTurns] = useState([]);
+
+  function deriveActivePlayer(gameTurns) {
+    let currentPlayer = "X";
+    //마지막 턴이 x였을 경우
+    if (gameTurns.length > 0 && gameTurns[0].player === "X") {
+      currentPlayer = "O";
+    }
+    return currentPlayer;
+  }
+
+  const gameBoard = deriveGameBoard(gameTurns);
+  const winner = deriveWinner(gameBoard, players);
+  const hasdraw = gameTurns.length === 9 && !winner;
   //굳이 중복된 상태를 쓸 필요없음
   //const [hasWinner, setHasWinner] = useState(false);
   const activePlayer = deriveActivePlayer(gameTurns);
-  function handleSelectSquare({ rowIndex, colIndex }) {
+  function handleSelectSquare(rowIndex, colIndex) {
     setGameTurns((prevTurns) => {
       let currentPlayer = deriveActivePlayer(prevTurns);
 
@@ -81,22 +98,41 @@ function MainSection() {
     });
   }
 
+  function handleRestart() {
+    setGameTurns([]);
+  }
+
+  function handlePlayerNameChange(symbol, newName) {
+    setPlayers((prevPlayers) => {
+      return {
+        //이전 객체 복사
+        ...prevPlayers,
+        //새로운 속성을 추가
+        //키값 value값
+        [symbol]: newName,
+      };
+    });
+  }
   return (
     <MainBackground>
       <Title></Title>
       <PlayersWrap>
         <PlayerInfo
-          initialName={"me"}
+          initialName={players["X"]}
           mark={"X"}
           isActive={activePlayer === "X"}
+          onChangeName={handlePlayerNameChange}
         ></PlayerInfo>
         <PlayerInfo
-          initialName={"computer"}
+          initialName={players["O"]}
           mark={"O"}
           isActive={activePlayer === "O"}
+          onChangeName={handlePlayerNameChange}
         ></PlayerInfo>
       </PlayersWrap>
-      {winner && <p>You Won, {winner}!</p>}
+      {(winner || hasdraw) && (
+        <GameOver winner={winner} RematchClick={handleRestart}></GameOver>
+      )}
       <Board onSelectSquare={handleSelectSquare} board={gameBoard}></Board>
       <Log turns={gameTurns}></Log>
     </MainBackground>

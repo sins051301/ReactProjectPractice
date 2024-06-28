@@ -1,10 +1,11 @@
-function GameOver({ winner }) {
+function GameOver({ winner, RematchClick }) {
   return (
     <div>
       <h2>Game Over!</h2>
-      <p>{winner} won!</p>
+      {winner && <p>{winner} won!</p>}
+      {!winner && <p>draw..</p>}
       <p>
-        <button>Rematch!</button>
+        <button onClick={RematchClick}>Rematch!</button>
       </p>
     </div>
   );

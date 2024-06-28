@@ -27,9 +27,16 @@ const PlayerEditButton = styled.button`
   border: 1px solid gray;
 `;
 
-function PlayerInfo({ initialName, mark, isActive }) {
+function PlayerInfo({ initialName, mark, isActive, onChangeName }) {
   const [player, setPlayerName] = useState(initialName);
   const [edit, setEdit] = useState(true);
+
+  function handleEditClick() {
+    setEdit((edit) => !edit);
+    if (!edit) {
+      onChangeName(mark, player);
+    }
+  }
   let input = edit ? (
     <NameWrap active={isActive}>
       {player}
@@ -46,11 +53,7 @@ function PlayerInfo({ initialName, mark, isActive }) {
   return (
     <>
       <PlayerWrap>{input}</PlayerWrap>
-      <PlayerEditButton
-        onClick={() => {
-          setEdit((edit) => !edit);
-        }}
-      >
+      <PlayerEditButton onClick={handleEditClick}>
         {edit ? "edit" : "save"}
       </PlayerEditButton>
     </>

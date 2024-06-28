@@ -52,7 +52,7 @@ function Board({ onSelectSquare, board }) {
               <PartialBoard
                 key={colIndex}
                 onClick={() => {
-                  onSelectSquare({ rowIndex, colIndex });
+                  onSelectSquare( rowIndex, colIndex );
                 }}
                 disabled={playerSymbol !== null}
               >
