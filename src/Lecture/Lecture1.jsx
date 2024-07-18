@@ -1,6 +1,7 @@
 import React from "react";
-import ButtonList from "./Header/ButtonList";
+import ButtonList from "../Header/ButtonList";
 import { useState } from "react";
+
 function Concept({ toStudy, toDo, grade }) {
   return (
     <div>
