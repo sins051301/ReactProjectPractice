@@ -9,12 +9,12 @@ import MainPage from "./TodoProject/MainPage";
 import MainTodo from "./PracticeTodo/MainTodo";
 import MainContext from "./ContextPractice/MainContext";
 import MainUse from "./UseEffectProject/MainUse";
+import MainQuiz from "./Quiz/MainQuiz";
+import MainApp from "./ReactTechnic/MainApp";
+import ServerApp from "./HttpProject/src/App";
+import MainForm from "./FormProject/MainForm";
 function App() {
-  return (
-    <>
-      <MainPortal></MainPortal>
-    </>
-  );
+  return <MainForm></MainForm>;
 }
 
 export default App;

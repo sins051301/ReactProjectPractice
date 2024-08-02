@@ -1,18 +1,16 @@
-import { useEffect, useState } from "react";
-import Progress from "./Progress";
+import { useEffect } from 'react';
+
+import ProgressBar from './ProgressBar';
+
 const TIMER = 3000;
+
 export default function DeleteConfirmation({ onConfirm, onCancel }) {
   useEffect(() => {
     const timer = setTimeout(() => {
-      console.log("SET");
       onConfirm();
-    }, 3000);
-    //useEffect가 작동되기 바로 직전에 실행
-    //의존성이 함수일 경우 까다로움
-    //main컴포넌트가 재실행되면 새로운 함수 객체를 전달 받아서 무한루프에 빠질
-    //수 있다. ->다르다고 판단하기 때문에 계속 실행
+    }, TIMER);
+
     return () => {
-      console.log("cleaning up timer");
       clearTimeout(timer);
     };
   }, [onConfirm]);
@@ -29,7 +27,7 @@ export default function DeleteConfirmation({ onConfirm, onCancel }) {
           Yes
         </button>
       </div>
-      <Progress timer={TIMER}></Progress>
+      <ProgressBar timer={TIMER} />
     </div>
   );
 }

@@ -32,21 +32,21 @@ function TimerChallenge({ title, targetTime }) {
 
   return (
     <>
-      {expired && (
+      {/* {expired && (
         <ResultModal
           ref={dialog}
           result={"lose"}
           targetTime={targetTime}
         ></ResultModal>
-      )}
-{/* 
+      )} */}
+
       <ResultModal
         ref={dialog}
         result={"lose"}
         targetTime={targetTime}
         remainingTime={timeRemaining}
         onReset={handleReset}
-      ></ResultModal> */}
+      ></ResultModal>
 
       <section className="challenge">
         <h2>{title}</h2>
