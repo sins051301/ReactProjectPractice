@@ -13,8 +13,9 @@ import MainQuiz from "./Quiz/MainQuiz";
 import MainApp from "./ReactTechnic/MainApp";
 import ServerApp from "./HttpProject/src/App";
 import MainForm from "./FormProject/MainForm";
+import ProjectApp from "./MyConnectionProject/src/App";
 function App() {
-  return <MainForm></MainForm>;
+  return <ProjectApp></ProjectApp>;
 }
 
 export default App;
