@@ -1,15 +1,32 @@
-import { useRef, useImperativeHandle, forwardRef, useState } from "react";
+import {
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+  useState,
+  useContext,
+} from "react";
+
 import Input from "./Input";
 import { isNotEmpty, isEmail, hasMinLength } from "./util/validation";
 import useInput from "../../../FormProject/hooks/useInput";
 import { createPortal } from "react-dom";
-const Form = forwardRef(function Form({ amount }, ref) {
+import { EmailContext, MyMealContext } from "./store/Context";
+import { updateUserMeals } from "../http";
+import FormBasic from "./FormBasic";
+
+
+const Form = forwardRef(function Form({}, ref) {
+  const { name, email, street, postalCode, city, setForm } =
+    useContext(EmailContext);
+  const { myMeal } = useContext(MyMealContext);
+  const [message, setMessage] = useState();
+  const answer = useRef();
   const {
     value: nameValue,
     handleInputChange: handleNameChange,
     handleInputBlur: handleNameBlur,
     hasError: nameError,
-  } = useInput("", (value) => {
+  } = useInput(name, (value) => {
     return isNotEmpty(value);
   });
   const {
@@ -17,7 +34,7 @@ const Form = forwardRef(function Form({ amount }, ref) {
     handleInputChange: handleEamilChange,
     handleInputBlur: handleEamilBlur,
     hasError: eamilError,
-  } = useInput("", (value) => {
+  } = useInput(email, (value) => {
     return isNotEmpty(value) && isEmail(value);
   });
   const {
@@ -25,14 +42,13 @@ const Form = forwardRef(function Form({ amount }, ref) {
     handleInputChange: handlePostalChange,
     handleInputBlur: handlePostalBlur,
     hasError: postalError,
-  } = useInput("", (value) => {
+  } = useInput(postalCode, (value) => {
     return isNotEmpty(value) && hasMinLength(value, 6);
   });
 
   const [input, setInput] = useState({
-    street: "",
-    postalCode: "",
-    city: "",
+    street: street,
+    city: city,
   });
 
   function handleChange(identifier, event) {
@@ -56,11 +72,26 @@ const Form = forwardRef(function Form({ amount }, ref) {
       },
     };
   });
+  function handleAnswer() {
+    modal.current.close();
+    answer.current.open();
+
+    const timer = setTimeout(() => {
+      answer.current.close();
+    }, 6000);
+  }
+
+  async function updateForm(orderData) {
+    const message = await updateUserMeals(orderData);
+    setMessage(message);
+    handleAnswer();
+  }
+
   return createPortal(
     <dialog ref={modal} className="modal">
       <h2>Checkout</h2>
       <form action="" typeof="submit">
-        <p>{amount}</p>
+        <p>total Amount {myMeal.sum}$</p>
         <Input
           id={"name"}
           label={"Full Name"}
@@ -97,17 +128,46 @@ const Form = forwardRef(function Form({ amount }, ref) {
             onChange={(event) => handleChange("city", event)}
           ></Input>
         </div>
-
+        <FormBasic ref={answer} css={'modal'}>{message}</FormBasic>
         <button
-          onClick={() => {
+          onClick={(event) => {
+            event.preventDefault();
+            setForm({
+              name: nameValue,
+              email: emailValue,
+              postalCode: postalValue,
+              street: input.street,
+              city: input.city,
+            });
             modal.current.close();
           }}
         >
           Close
         </button>
         <button
-          onClick={() => {
-            modal.current.close();
+          onClick={async (event) => {
+            event.preventDefault();
+
+            setForm({
+              name: "",
+              email: "",
+              postalCode: "",
+              street: "",
+              city: "",
+            });
+
+            const orderData = {
+              customer: {
+                name: nameValue,
+                email: emailValue,
+                street: input.street,
+                "postal-code": postalValue,
+                city: input.city,
+              },
+              items: myMeal,
+            };
+
+            updateForm(orderData);
           }}
         >
           Submit Order

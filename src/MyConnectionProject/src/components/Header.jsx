@@ -1,15 +1,11 @@
 import LogoImg from "../assets/logo.jpg";
 import Modal from "./Modal";
-import { useRef } from "react";
+import { useState } from "react";
+function Header({ total }) {
+  const [modal, setModal] = useState(false);
 
-function Header({ total, meals, caculMeal }) {
-  const modal = useRef();
   function handleModal() {
-    if (modal.current) {
-      modal.current.open();
-    } else {
-      modal.current.close();
-    }
+    setModal((prevState) => !prevState);
   }
   return (
     <div id="main-header">
@@ -18,7 +14,7 @@ function Header({ total, meals, caculMeal }) {
         <img src={LogoImg} alt="title-img" />
         <h1>REATFOOD</h1>
       </div>
-      <Modal ref={modal} meals={meals} caculMeal={caculMeal}></Modal>
+      {modal && <Modal></Modal>}
       <button onClick={handleModal}>Cart({total})</button>
     </div>
   );

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Errors from "./components/Error";
 import Selection from "./components/Selection";
 import Header from "./components/Header";
-import Modal from "./components/Modal";
+import { EmailContext, MyMealContext } from "./components/store/Context";
 
 function ProjectApp() {
   const [meals, setMeals] = useState([]);
@@ -11,87 +11,13 @@ function ProjectApp() {
   const [error, setError] = useState();
   const [myMeal, setMyMeal] = useState({ array: [], sum: 0, num: 0 });
 
-  function addMeal(meal) {
-    const target = myMeal.array.find((element) => meal.name === element.name);
-
-    if (target) {
-      setMyMeal((prevMeal) => {
-        return {
-          array: [
-            ...prevMeal.array.map((item) =>
-              item === target
-                ? {
-                    ...item,
-                    mine: item.mine + 1,
-                  }
-                : item
-            ),
-          ],
-          sum: (Number(prevMeal.sum) + Number(meal.price)).toFixed(2),
-          num: prevMeal.num + 1,
-        };
-      });
-    } else {
-      setMyMeal((prevMeal) => {
-        return {
-          array: [
-            ...prevMeal.array,
-            { name: meal.name, price: meal.price, mine: 1 },
-          ],
-
-          sum: (Number(prevMeal.sum) + Number(meal.price)).toFixed(2),
-          num: prevMeal.num + 1,
-        };
-      });
-    }
-
-    console.log(myMeal);
-  }
-
-  function caculMeal(meal, identifier) {
-    const target = myMeal.array.find((element) => meal.name === element.name);
-    if (identifier === "+") {
-      setMyMeal((prevMeal) => {
-        return {
-          array: [
-            ...prevMeal.array.map((item) =>
-              item === target
-                ? {
-                    ...item,
-                    mine: item.mine + 1,
-                  }
-                : item
-            ),
-          ],
-          sum: (Number(prevMeal.sum) + Number(meal.price)).toFixed(2),
-          num: prevMeal.num + 1,
-        };
-      });
-    } else {
-      setMyMeal((prevMeal) => {
-        return {
-          array: [
-            ...prevMeal.array.map((item) =>
-              item === target
-                ? {
-                    ...item,
-                    mine: item.mine - 1,
-                  }
-                : item
-            ),
-          ],
-          sum: (Number(prevMeal.sum) - Number(meal.price)).toFixed(2),
-          num: prevMeal.num - 1,
-        };
-      });
-      setMyMeal((prevMeal) => {
-        return {
-          ...prevMeal,
-          array: prevMeal.array.filter((item) => item.mine !== 0),
-        };
-      });
-    }
-  }
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    street: "",
+    postalCode: "",
+    city: "",
+  });
 
   useEffect(() => {
     async function fetchMeals() {
@@ -101,8 +27,7 @@ function ProjectApp() {
         setMeals(Meals);
         console.log(Meals);
       } catch (error) {
-        console.log({ error: error || "meal fetch error" });
-        setError({ message: error });
+        setError({ message: error || "meal fetch error" });
       }
       setIsLoading(false);
     }
@@ -113,6 +38,20 @@ function ProjectApp() {
     setError(null);
   }
 
+  const ctxValue = {
+    name: form.name,
+    email: form.email,
+    street: form.street,
+    postalCode: form.postalCode,
+    city: form.city,
+    setForm,
+  };
+
+  const mealCtxValue = {
+    myMeal: myMeal,
+    setMyMeal,
+  };
+
   if (error) {
     <Errors
       title="An error occured!"
@@ -122,18 +61,14 @@ function ProjectApp() {
   }
 
   return (
-    <>
-      <Header
-        total={myMeal.num || 0}
-        meals={myMeal}
-        caculMeal={caculMeal}
-      ></Header>
-      <Selection
-        meals={meals}
-        isLoading={isLoading}
-        addMeal={addMeal}
-      ></Selection>
-    </>
+    <EmailContext.Provider value={ctxValue}>
+      <MyMealContext.Provider value={mealCtxValue}>
+        <Header total={myMeal.num || 0}></Header>
+        <body>
+          <Selection meals={meals} isLoading={isLoading}></Selection>
+        </body>
+      </MyMealContext.Provider>
+    </EmailContext.Provider>
   );
 }
 

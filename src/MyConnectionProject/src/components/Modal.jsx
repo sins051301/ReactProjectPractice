@@ -1,38 +1,38 @@
-import { useRef, useImperativeHandle, forwardRef } from "react";
-import { createPortal } from "react-dom";
+import { useRef, useContext, useEffect } from "react";
+
 import Form from "./Form";
-const Modal = forwardRef(function Modal({ meals, caculMeal }, ref) {
+import { MyMealContext } from "./store/Context";
+import { caculMeal } from "./util/mealHandle";
+import FormBasic from "./FormBasic";
+function Modal() {
+  const { myMeal, setMyMeal } = useContext(MyMealContext);
   const modal = useRef();
   const form = useRef();
-  useImperativeHandle(ref, () => {
-    return {
-      open() {
-        modal.current.showModal();
-      },
-      close() {
-        modal.current.close();
-      },
-    };
-  });
-  return createPortal(
+  useEffect(() => {
+    modal.current.open();
+  }, []);
+  return (
     <>
-      {" "}
       <Form ref={form}></Form>
-      <dialog ref={modal} className="cart">
+      <FormBasic ref={modal} css={'cart'}>
         <h2>your cart</h2>
         <ul>
-          {meals.array.map((meal) => (
+          {myMeal.array.map((meal) => (
             <li className="cart-item">
               {meal.name}-{meal.mine}x ${meal.price}
               <div className="cart-item-actions">
-                <button onClick={() => caculMeal(meal, "-")}>-</button>
+                <button onClick={() => caculMeal(meal, "-", myMeal, setMyMeal)}>
+                  -
+                </button>
                 {meal.mine}
-                <button onClick={() => caculMeal(meal, "+")}>+</button>
+                <button onClick={() => caculMeal(meal, "+", myMeal, setMyMeal)}>
+                  +
+                </button>
               </div>
             </li>
           ))}
         </ul>
-        <div className="cart-total">{meals.sum}$</div>
+        <div className="cart-total">{myMeal.sum}$</div>
 
         <button
           onClick={() => {
@@ -49,10 +49,9 @@ const Modal = forwardRef(function Modal({ meals, caculMeal }, ref) {
         >
           go to Checkout
         </button>
-      </dialog>
-    </>,
-    document.getElementById("modal")
+      </FormBasic>
+    </>
   );
-});
+}
 
 export default Modal;

@@ -8,14 +8,15 @@ export async function fetchUserMeals() {
   return resData;
 }
 
-export async function updateUserMeals({ meals }) {
+export async function updateUserMeals(orderData) {
   const response = await fetch("http://localhost:4000/orders", {
-    method: "PUT",
-    body: JSON.stringify({ meals }),
-    header: {
+    method: "POST",
+    body: JSON.stringify({ order: orderData }),
+    headers: {
       "Content-Type": "application/json",
     },
   });
+
   const resData = await response.json();
   if (!response.ok) {
     throw new Error("Failed to update user data.");
