@@ -1,56 +1,26 @@
-import { useRef, useContext, useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 
-import Form from "./Form";
-import { MyMealContext } from "./store/Context";
-import { caculMeal } from "./util/mealHandle";
-import FormBasic from "./FormBasic";
-function Modal() {
-  const { myMeal, setMyMeal } = useContext(MyMealContext);
-  const modal = useRef();
-  const form = useRef();
+function Modal({ children, className = "", open, onClose }) {
+  const dialog = useRef();
   useEffect(() => {
-    modal.current.open();
-  }, []);
-  return (
-    <>
-      <Form ref={form}></Form>
-      <FormBasic ref={modal} css={'cart'}>
-        <h2>your cart</h2>
-        <ul>
-          {myMeal.array.map((meal) => (
-            <li className="cart-item">
-              {meal.name}-{meal.mine}x ${meal.price}
-              <div className="cart-item-actions">
-                <button onClick={() => caculMeal(meal, "-", myMeal, setMyMeal)}>
-                  -
-                </button>
-                {meal.mine}
-                <button onClick={() => caculMeal(meal, "+", myMeal, setMyMeal)}>
-                  +
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-        <div className="cart-total">{myMeal.sum}$</div>
+    
+    //참조값을 지정해 놓기
+    const modal = dialog.current;
+    if (open) {
+      modal.showModal();
+    }
+    return () => {
+      modal.close();
 
-        <button
-          onClick={() => {
-            modal.current.close();
-          }}
-        >
-          Close
-        </button>
-        <button
-          onClick={() => {
-            modal.current.close();
-            form.current.open();
-          }}
-        >
-          go to Checkout
-        </button>
-      </FormBasic>
-    </>
+    };
+  }, [open]);
+
+  return createPortal(
+    <dialog ref={dialog} className={`modal ${className}`} onClose={onClose}>
+      {children}
+    </dialog>,
+    document.getElementById("modal")
   );
 }
 

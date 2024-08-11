@@ -14,8 +14,17 @@ import MainApp from "./ReactTechnic/MainApp";
 import ServerApp from "./HttpProject/src/App";
 import MainForm from "./FormProject/MainForm";
 import ProjectApp from "./MyConnectionProject/src/App";
+import Practice from "./Practice";
+import store from "./ReduxProject/store/index";
+import Redux1 from "./ReduxProject/Redux1";
+import { Provider } from "react-redux";
 function App() {
-  return <ProjectApp></ProjectApp>;
+  return (
+    <Provider store={store}>
+      {" "}
+      <Redux1 ></Redux1>
+    </Provider>
+  );
 }
 
 export default App;

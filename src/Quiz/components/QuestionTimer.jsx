@@ -15,6 +15,7 @@ function QuestionTimer({ timeout, onTimeout, mode }) {
     const Timer = setInterval(() => {
       setRemainingTime((prevTime) => prevTime - 100);
     }, 100);
+    //함수가 실행되는 시점은 effect함수가 재실행되기 직전
     return () => {
       clearTimeout(Timer);
     };

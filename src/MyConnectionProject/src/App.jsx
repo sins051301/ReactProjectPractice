@@ -1,15 +1,21 @@
 import { fetchUserMeals } from "./http";
 import { useEffect, useState } from "react";
-import Errors from "./components/Error";
+import Errors from "./components/Errors";
 import Selection from "./components/Selection";
 import Header from "./components/Header";
-import { EmailContext, MyMealContext } from "./components/store/Context";
+import Cart from "./components/Cart";
+import { EmailContextProvider } from "./components/store/Context";
+import Checkout from "./components/Checkout";
+import { UserProgressContextProvider } from "./components/store/UserProgressContext";
+import {
+  EmailContext,
+  MyMealContextProvider,
+} from "./components/store/Context";
 
 function ProjectApp() {
   const [meals, setMeals] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
-  const [myMeal, setMyMeal] = useState({ array: [], sum: 0, num: 0 });
 
   const [form, setForm] = useState({
     name: "",
@@ -47,11 +53,6 @@ function ProjectApp() {
     setForm,
   };
 
-  const mealCtxValue = {
-    myMeal: myMeal,
-    setMyMeal,
-  };
-
   if (error) {
     <Errors
       title="An error occured!"
@@ -61,14 +62,16 @@ function ProjectApp() {
   }
 
   return (
-    <EmailContext.Provider value={ctxValue}>
-      <MyMealContext.Provider value={mealCtxValue}>
-        <Header total={myMeal.num || 0}></Header>
-        <body>
+    <EmailContextProvider>
+      <UserProgressContextProvider>
+        <MyMealContextProvider>
+          <Header></Header>
           <Selection meals={meals} isLoading={isLoading}></Selection>
-        </body>
-      </MyMealContext.Provider>
-    </EmailContext.Provider>
+          <Cart />
+          <Checkout />
+        </MyMealContextProvider>
+      </UserProgressContextProvider>
+    </EmailContextProvider>
   );
 }
 

@@ -1,12 +1,19 @@
 import LogoImg from "../assets/logo.jpg";
-import Modal from "./Modal";
-import { useState } from "react";
-function Header({ total }) {
-  const [modal, setModal] = useState(false);
+import { useContext } from "react";
+import { MyMealContext } from "./store/Context";
+import { userProgressContext } from "./store/UserProgressContext";
+import Button from "./UI/Button";
+function Header() {
+  const { myMeal } = useContext(MyMealContext);
+  const userProgressCtx = useContext(userProgressContext);
 
-  function handleModal() {
-    setModal((prevState) => !prevState);
+  function handleShowCart() {
+    userProgressCtx.showCart();
   }
+  const total = myMeal.array.reduce((totalNumberOfItems, item) => {
+    return totalNumberOfItems + item.mine;
+  }, 0);
+
   return (
     <div id="main-header">
       <div id="title">
@@ -14,8 +21,10 @@ function Header({ total }) {
         <img src={LogoImg} alt="title-img" />
         <h1>REATFOOD</h1>
       </div>
-      {modal && <Modal></Modal>}
-      <button onClick={handleModal}>Cart({total})</button>
+
+      <Button textOnly onClick={handleShowCart}>
+        Cart({total || 0})
+      </Button>
     </div>
   );
 }

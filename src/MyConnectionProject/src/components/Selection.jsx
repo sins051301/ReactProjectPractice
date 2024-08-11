@@ -1,29 +1,27 @@
-import { addMeal } from "./util/mealHandle";
-import { useContext } from "react";
-import { MyMealContext } from "./store/Context";
-function Selection({ meals, isLoading }) {
-  const { myMeal, setMyMeal } = useContext(MyMealContext);
+import MealItem from "./MealItem";
+import useHttp from "./hooks/useHttp";
+import Errors from "./Errors";
+const requestConfig = {};
+///따라서 바깥에 만들어 주어 컴포넌트의 함수의 랜더링으로 인한 객체 재생성을 막아준다.
+function Selection() {
+  //초기 객체는 컴포넌트 함수에서 생성됨으로 의존성 배열의 변화가 생기게 됨
+  const {
+    data: meals,
+    isLoading,
+    error,
+  } = useHttp("http://localhost:4000/meals", requestConfig, []);
+  if (isLoading) {
+    return <p className="center">loading...</p>;
+  }
+  if (error) {
+    return <Errors title={"Failed to fetch meals"} message={error}></Errors>;
+  }
   return (
-    <div id="meals">
-      {isLoading && <p>loading...</p>}
-      {!isLoading &&
-        meals.map((meal) => (
-          <div key={meal.name}>
-            <div className="meal-item">
-              <img src={`http://localhost:4000/${meal.image}`} alt="meal-img" />
-              <h3> {meal.name}</h3>
-              <div className="meal-item-price"> {meal.price}</div>
-              <article>
-                <div className="meal-item-description">{meal.description}</div>
-
-                <button onClick={() => addMeal(meal, myMeal, setMyMeal)}>
-                  Add to cart
-                </button>
-              </article>
-            </div>
-          </div>
-        ))}
-    </div>
+    <ul id="meals">
+      {meals.map((meal) => (
+        <MealItem meal={meal} key={meal.id}></MealItem>
+      ))}
+    </ul>
   );
 }
 
