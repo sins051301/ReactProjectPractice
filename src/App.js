@@ -15,16 +15,14 @@ import ServerApp from "./HttpProject/src/App";
 import MainForm from "./FormProject/MainForm";
 import ProjectApp from "./MyConnectionProject/src/App";
 import Practice from "./Practice";
-import store from "./ReduxProject/store/index";
+import store from "./ReduxProject2/components/store/Store";
 import Redux1 from "./ReduxProject/Redux1";
 import { Provider } from "react-redux";
+import Redux2 from "./ReduxProject2/Redux2";
+import Router from "./RouterProject/Router";
+import Router2 from "./RouterProject2/frontend/src/Router2";
 function App() {
-  return (
-    <Provider store={store}>
-      {" "}
-      <Redux1 ></Redux1>
-    </Provider>
-  );
+  return <Router2></Router2>;
 }
 
 export default App;

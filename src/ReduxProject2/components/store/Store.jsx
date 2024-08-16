@@ -1,11 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import counterReducer from "./counter";
-import authReducer from "./auth";
+import ItemReducer from "./CartItem";
+import displayReducer from "./Ui";
 //configureStore은 여러 reducer를 병합한다.
 const store = configureStore({
-  reducer: { counter: counterReducer, auth: authReducer},
+  reducer: { cartItem: ItemReducer, visible: displayReducer },
 });
-
-
 
 export default store;
