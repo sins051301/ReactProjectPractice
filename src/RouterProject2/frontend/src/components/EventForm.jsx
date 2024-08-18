@@ -4,13 +4,30 @@ import classes from "./EventForm.module.css";
 import { useDispatch } from "react-redux";
 import { FormAction } from "../../store/form";
 import { useSend } from "../../hooks/useSend";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function EventForm({ method, event }) {
-  const dispatch = useDispatch();
   const form = useSelector((state) => state.FormItem);
+  const [initialform, setinitialform] = useState({
+    title: form.title,
+    image: form.image,
+    date: form.date,
+    description: form.description,
+  });
+
+  function onChange(event, id) {
+    setinitialform((prev) => {
+      return {
+        ...prev,
+        [id]: event.target.value,
+      };
+    });
+  }
+
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
-  console.log(method);
+
   const { sendEvent, error } = useSend({ link: "events" }, [], {
     method: method,
     headers: {
@@ -18,6 +35,8 @@ function EventForm({ method, event }) {
     },
   });
   function cancelHandler() {
+    dispatch(FormAction.setForm(initialform));
+
     navigate("..");
   }
 
@@ -26,29 +45,55 @@ function EventForm({ method, event }) {
     const fd = new FormData(event.target);
     const data = Object.fromEntries(fd.entries());
     data.id = Math.random() * 1000;
-    //dispatch(FormAction.setForm(data));
-    //console.log(data);
 
-    sendEvent(JSON.stringify(data)); 
+    sendEvent(JSON.stringify(data));
   }
 
   return (
     <form className={classes.form} onSubmit={handleForm}>
       <p>
         <label htmlFor="title">Title</label>
-        <input id="title" type="text" name="title" required />
+        <input
+          id="title"
+          type="text"
+          name="title"
+          value={initialform.title}
+          onChange={(event) => onChange(event, "title")}
+          required
+        />
       </p>
       <p>
         <label htmlFor="image">Image</label>
-        <input id="image" type="url" name="image" required />
+        <input
+          id="image"
+          type="url"
+          name="image"
+          value={initialform.image}
+          onChange={(event) => onChange(event, "image")}
+          required
+        />
       </p>
       <p>
         <label htmlFor="date">Date</label>
-        <input id="date" type="date" name="date" required />
+        <input
+          id="date"
+          type="date"
+          name="date"
+          value={initialform.date}
+          onChange={(event) => onChange(event, "date")}
+          required
+        />
       </p>
       <p>
         <label htmlFor="description">Description</label>
-        <textarea id="description" name="description" rows="5" required />
+        <textarea
+          id="description"
+          name="description"
+          rows="5"
+          value={initialform.description}
+          onChange={(event) => onChange(event, "description")}
+          required
+        />
       </p>
       <div className={classes.actions}>
         <button type="button" onClick={cancelHandler}>

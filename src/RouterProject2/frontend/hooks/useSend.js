@@ -9,15 +9,15 @@ export function useSend(url, initialValue, blob) {
   async function sendEvent(data) {
   
     setIsLoading(true);
-    console.log(data)
+   
     try {
       const resData = await sendHttpRequest(url.link, { ...blob, body: data });
       setData(resData);
      
-      console.log(resData);
+    
     } catch (error) {
       setError(error.message || "something wrong..");
-      console.log(error);
+  
     }
     setIsLoading(false);
   }

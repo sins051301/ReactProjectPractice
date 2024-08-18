@@ -12,15 +12,15 @@ export function useFetch(url, initialValue) {
       try {
         const resData = await sendHttpRequest(url.link);
         setData(resData[url.data]);
-        console.log(resData[url.data]);
+     
       } catch (error) {
         setError(error.message || "something wrong..");
-        console.log(error);
+     
       }
       setIsLoading(false);
     }
     getEvent();
-    console.log(data);
+ 
   }, []);
   return { data, isLoading, error };
 }

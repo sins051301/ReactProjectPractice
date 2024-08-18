@@ -3,7 +3,7 @@ import eventRoutes from "./routes/events.mjs";
 import cors from "cors";
 const app = express();
 const port = 8080;
-
+app.use(express.json());
 app.use(cors());
 
 app.use((req, res, next) => {
