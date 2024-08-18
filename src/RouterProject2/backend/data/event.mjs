@@ -2,17 +2,27 @@ import fs from "node:fs/promises";
 
 import { v4 as uuidv4 } from "uuid";
 
-import  NotFoundError  from "../util/errors.mjs";
+import NotFoundError from "../util/errors.mjs";
+import path from "path";
 
-const generateId = uuidv4();
+const __dirname = path.resolve();
+const eventPath = path.join(
+  __dirname,
+  "src",
+  "RouterProject2",
+  "backend",
+  "events.json"
+);
+
 
 export async function readData() {
-  const data = await fs.readFile("events.json", "utf8");
+  const data = await fs.readFile(eventPath, "utf8");
+
   return JSON.parse(data);
 }
 
 export async function writeData(data) {
-  await fs.writeFile("events.json", JSON.stringify(data));
+  await fs.writeFile(eventPath, JSON.stringify(data));
 }
 
 export async function getAll() {
@@ -39,7 +49,7 @@ export async function get(id) {
 
 export async function add(data) {
   const storedData = await readData();
-  storedData.events.unshift({ ...data, id: generateId() });
+  storedData.events.unshift({ ...data, id: uuidv4() });
   await writeData(storedData);
 }
 
@@ -64,4 +74,3 @@ export async function remove(id) {
   const updatedData = storedData.events.filter((ev) => ev.id !== id);
   await writeData({ events: updatedData });
 }
-

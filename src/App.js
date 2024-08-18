@@ -21,8 +21,13 @@ import { Provider } from "react-redux";
 import Redux2 from "./ReduxProject2/Redux2";
 import Router from "./RouterProject/Router";
 import Router2 from "./RouterProject2/frontend/src/Router2";
+import Formstore from "./RouterProject2/frontend/store/form";
 function App() {
-  return <Router2></Router2>;
+  return (
+    <Provider store={Formstore}>
+      <Router2></Router2>
+    </Provider>
+  );
 }
 
 export default App;

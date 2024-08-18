@@ -25,6 +25,7 @@ import Layout from "./components/Layout";
 import EventsPages from "../pages/EventsPage";
 import EventDetailPage from "../pages/EventDetailPage";
 import EventLayout from "./components/EventLayout";
+import NewEventPage from "../pages/NewEventPage";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
           {
             path: "/events/:id",
             element: <EventDetailPage />,
+          },
+          {
+            path: "/events/new",
+            element: <NewEventPage />,
           },
         ],
       },

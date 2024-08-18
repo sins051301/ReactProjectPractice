@@ -1,11 +1,11 @@
-import bodyParser from "body-parser";
 import express from "express";
 import eventRoutes from "./routes/events.mjs";
 import cors from "cors";
 const app = express();
-// const __dirname = path.resolve();
-app.use(bodyParser.json());
+const port = 8080;
+
 app.use(cors());
+
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PATCH,DELETE");
@@ -21,4 +21,6 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message: message });
 });
 
-app.listen(8080);
+app.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}/`);
+});

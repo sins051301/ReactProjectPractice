@@ -6,9 +6,11 @@ import cors from "cors";
 
 const app = express();
 const port = 4000;
+//절대 경로의 생성
 const __dirname = path.resolve();
 app.use(cors());
-// Serve static files from the 'public' directory
+//express.static() 미들웨어는 Express 서버에서 정적 파일을 제공하는 역할을 합니다.
+// 예를 들어, 이미지, CSS 파일, JavaScript 파일 등의 정적 리소스를 클라이언트가 직접 접근할 수 있도록 합니다.
 app.use(
   express.static(
     path.join(
@@ -22,6 +24,11 @@ app.use(
   )
 );
 
+
+//수신한 HTTP 요청의 본문(body)을 JSON 형식으로 파싱(parsing)하기 
+//위해 사용되는 미들웨어 설정입니다. 
+//이 코드를 사용하면 서버는 JSON 형식으로 전송된 요청 본문을 자동으로 읽고, 
+//이를 JavaScript 객체로 변환하여 req.body에 저장합니다.
 app.use(bodyParser.json());
 
 app.use((req, res, next) => {
