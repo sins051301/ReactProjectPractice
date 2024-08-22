@@ -1,37 +1,26 @@
+import EventForm from "../src/components/EventForm";
 import { useParams } from "react-router-dom";
-import EventItem from "../src/components/EventItem";
-import { useHttp } from "../hooks/useHttp";
-import { H1 } from "../Css/BasicDesign";
 import { useMemo } from "react";
-
-function EventDetailPage() {
+import { useHttp } from "../hooks/useHttp";
+import Loading from "../src/components/Loading";
+function EditEventPage() {
   const params = useParams();
-
   const initialEvent = useMemo(
     () => ({ link: `events/${params.id}`, data: "event" }),
     [params.id]
   );
-
   const { error, isLoading, data } = useHttp(initialEvent, []);
-
   if (isLoading) {
-    return <p>loading....</p>;
+    return <Loading></Loading>;
   }
-
   return (
     <>
       {error ? (
         <p>{error}</p>
       ) : (
-        <>
-          <H1>{data.title}</H1>
-          <p>
-            <EventItem event={data}></EventItem>
-          </p>
-        </>
+        <EventForm method={"PATCH"} event={data}></EventForm>
       )}
     </>
   );
 }
-
-export default EventDetailPage;
+export default EditEventPage;

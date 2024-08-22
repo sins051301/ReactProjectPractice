@@ -1,11 +1,12 @@
 import EventsList from "../src/components/EventsList";
-import { useFetch } from "../hooks/useFetch";
+import { useHttp } from "../hooks/useHttp";
+import Loading from "../src/components/Loading";
 const initialEvent = { link: "events", data: "events" };
 function EventsPages() {
-  const { error, isLoading, data } = useFetch(initialEvent, []);
+  const { error, isLoading, data } = useHttp(initialEvent, []);
 
   if (isLoading) {
-    return <p>loading....</p>;
+    return <Loading></Loading>;
   }
 
   return (

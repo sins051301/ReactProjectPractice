@@ -3,50 +3,46 @@ import { useSelector } from "react-redux";
 import classes from "./EventForm.module.css";
 import { useDispatch } from "react-redux";
 import { FormAction } from "../../store/form";
-import { useSend } from "../../hooks/useSend";
-import { useEffect, useState } from "react";
-
+import { useHttp } from "../../hooks/useHttp";
+import { useParams } from "react-router-dom";
+import { useForm } from "../../hooks/useForm";
 function EventForm({ method, event }) {
-  const form = useSelector((state) => state.FormItem);
-  const [initialform, setinitialform] = useState({
-    title: form.title,
-    image: form.image,
-    date: form.date,
-    description: form.description,
-  });
-
-  function onChange(event, id) {
-    setinitialform((prev) => {
-      return {
-        ...prev,
-        [id]: event.target.value,
-      };
-    });
-  }
-
+  const params = useParams();
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
+  const form = useSelector((state) => state.FormItem);
 
-  const { sendEvent, error } = useSend({ link: "events" }, [], {
+  const { onChange, initialform, link } = useForm(
+    {
+      title: form.title,
+      image: form.image,
+      date: form.date,
+      description: form.description,
+    },
+    event,
+    params.id
+  );
+
+  const { sendEvent, error } = useHttp({ link: link }, [], {
     method: method,
     headers: {
       "Content-Type": "application/json",
     },
   });
+  
   function cancelHandler() {
     dispatch(FormAction.setForm(initialform));
-
     navigate("..");
   }
 
-  function handleForm(event) {
+  async function handleForm(event) {
     event.preventDefault();
     const fd = new FormData(event.target);
     const data = Object.fromEntries(fd.entries());
     data.id = Math.random() * 1000;
 
-    sendEvent(JSON.stringify(data));
+    await sendEvent(JSON.stringify(data));
+    navigate("..");
   }
 
   return (

@@ -22,12 +22,10 @@ import Redux2 from "./ReduxProject2/Redux2";
 import Router from "./RouterProject/Router";
 import Router2 from "./RouterProject2/frontend/src/Router2";
 import Formstore from "./RouterProject2/frontend/store/form";
+import RouterLecture from "./RouterProjectLecture/frontend/src/RouterLectute";
+import Certification from "./CertificationProject/frontend/src/Certification";
 function App() {
-  return (
-    <Provider store={Formstore}>
-      <Router2></Router2>
-    </Provider>
-  );
+  return <Certification></Certification>;
 }
 
 export default App;

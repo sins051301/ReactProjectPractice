@@ -1,17 +1,18 @@
 import classes from "./EventItem.module.css";
 import { Link } from "react-router-dom";
-import { useSend } from "../../hooks/useSend";
+import { useHttp } from "../../hooks/useHttp";
 import { useNavigate } from "react-router-dom";
 function EventItem({ event }) {
   const navigate = useNavigate();
-  const { sendEvent } = useSend({ link: `events/${event.id}` }, [], {
+  const { sendEvent } = useHttp({ link: `events/${event.id}` }, [], {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
   });
-  function startDeleteHandler() {
-    sendEvent();
+  //event.preventDefault가 필요없음 -> 삭제되서 새로고침이 일어나지 않음
+  async function startDeleteHandler() {
+    await sendEvent();
     navigate("..");
   }
 
